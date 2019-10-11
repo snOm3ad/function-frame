@@ -244,7 +244,7 @@ fn construct_guards(
 }
 
 #[proc_macro_attribute]
-pub fn add_headers(args: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
+pub fn frame(args: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     //  Change the input to `proc_macro2::TokenStream` as `syn` and `quote` both
     //  work with this type of `TokenStream`, and it allows for compiler version
     //  independent code, and allows the code to exist outside the macro compila-

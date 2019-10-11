@@ -1,6 +1,6 @@
-use function_frame::add_headers;
+use function_frame::frame;
 
-#[add_headers(title = "Hello World - Example", sep = "-", width = 25)]
+#[frame(title = "Hello World - Example", sep = "-", width = 25)]
 fn main() {
     println!("Hello, world!");
 }
