@@ -14,7 +14,7 @@ fn example_one() {
     let width = 50;
     let header_sep = "=".repeat(width);
     let footer_sep = "=".repeat(2 * (width + 1) + title.len());
-    println!("{} Example One {}", header_sep, header_sep);
+    println!("{} {} {}", header_sep, title, header_sep);
     // some code here...
     println!("{}", footer_sep);
 }
