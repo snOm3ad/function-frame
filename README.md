@@ -42,7 +42,7 @@ fn example_one() {
 
 Which is a huge improvement, not only reduces the amount of code I have to write it also leaves the code inside the example intact! For now it only works by printing to `stdout` though in the future if the use case arises I will consider adding the functionality of writing to a file.
 
-#### License
+### License
 <sub>
 Licensed under MIT license.
 </sub>
