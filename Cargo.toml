@@ -3,6 +3,9 @@ name = "function-frame"
 version = "0.1.0"
 authors = ["snOm3ad <geronimooliver00@gmail.com>"]
 edition = "2018"
+license = "MIT"
+description = "Procedural macro to wrap any function outputs within a text frame."
+repository = "github.com/snOm3ad/function-frame"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
