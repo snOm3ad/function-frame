@@ -7,7 +7,7 @@ use quote::ToTokens;
 use syn::parse::{Parse, Parser};
 use syn::punctuated::Punctuated;
 
-struct HeaderConfig {
+struct FrameConfig {
     str_opts: Vec<(String, String)>,
     num_opts: Vec<(String, usize)>,
     bin_opts: Vec<(String, bool)>,
@@ -20,11 +20,11 @@ enum Opts {
     Bin(bool),
 }
 
-impl HeaderConfig {
+impl FrameConfig {
     fn new() -> Self {
         //  Pre-allocate memory for the number of options we are expecting.
         //  Though the user may give more than what we expect.
-        HeaderConfig {
+        FrameConfig {
             num_opts: Vec::with_capacity(1),
             str_opts: Vec::with_capacity(2),
             bin_opts: Vec::with_capacity(1),
@@ -33,7 +33,7 @@ impl HeaderConfig {
 }
 
 // TODO: refactor this so that it returns an error.
-fn parse_macro_arguments(args: pm2::TokenStream) -> HeaderConfig {
+fn parse_macro_arguments(args: pm2::TokenStream) -> FrameConfig {
     //  Use a `Punctuated` sequence of `syn::ExprAssign` which is basically
     //  things of the form:
     //      ```
@@ -105,7 +105,7 @@ fn parse_macro_arguments(args: pm2::TokenStream) -> HeaderConfig {
     //  Then you would constantly need to match against the multiple types
     //  that the element can be, even when you know for sure that an element
     //  with a key `K` is of type `T`.
-    let mut config = HeaderConfig::new();
+    let mut config = FrameConfig::new();
 
     //  Start looping through all the assignment expressions.
     //  NOTE that there is no limit as to how many of them the user is allowed
@@ -182,7 +182,7 @@ impl<'a> fmt::Display for ArgNotFound<'a> {
 impl<'a> error::Error for ArgNotFound<'a> {}
 
 //  Helper function to help us locate a given argument name within a specified map
-//  in the `HeaderConfig` object. NOTE that we have to take the map `Vec` as ref
+//  in the `FrameConfig` object. NOTE that we have to take the map `Vec` as ref
 //  and avoid moving values from it cause we might need them later.
 fn find_argument<K, V>(map: &Vec<(K, V)>, arg_name: &'static str) -> Result<V, impl error::Error>
 where
