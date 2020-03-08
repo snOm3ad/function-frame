@@ -288,25 +288,27 @@ pub fn frame(args: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     //  Construct two `pm2::TokenStreams` using the `quote` crate.
     let (header, footer) = construct_guards(segment_title, sep, width, sep_line);
 
-    //  Use `syn::Stmt::parse` function to parse the `pm2::TokenStreams` into `syn::Stmts`
-    //  which makes it much more convenient to insert into the user's code.
-    let macro_parser = syn::Stmt::parse;
-    let header_macro_stmt = Parser::parse2(macro_parser, header).unwrap();
-    let footer_macro_stmt = Parser::parse2(macro_parser, footer).unwrap();
-
     //  Finally we need to parse the input in order to determine someone is not calling this
     //  macro in a context where it doesn't make sense. Right now, this macro expects to be
     //  used only in functions.
     let input = pm2::TokenStream::from(item.clone());
     match Parser::parse2(syn::ItemFn::parse, input) {
         Ok(mut func) => {
-            //  The `func.block.stmts` variable is of type `Vec<syn::Stmts>` so we can easily
-            //  insert our header and footer guards without even having to touch the user's
-            //  existing code.
-            let n = func.block.stmts.len() + 1;
-            func.block.stmts.insert(0, header_macro_stmt);
-            func.block.stmts.insert(n, footer_macro_stmt);
-            //  Finally now that everything is properly setup, we return the modified function.
+            // Temporarily steal the current function block.
+            let block = func.block;
+            // Reconstruct and inject the header and footer into it, yielding new token stream.
+            let new_block = quote::quote! {{
+                #header
+                let closure = move || #block;
+                let retval = closure();
+                #footer
+                retval
+            }};
+
+            // Convert the token stream into a block again, and box it.
+            func.block = Box::new(Parser::parse2(syn::Block::parse, new_block).unwrap());
+
+            // Return the modified function.
             pm::TokenStream::from(func.to_token_stream())
         }
         Err(_) => panic!("macro can only be applied to `function` items."),
